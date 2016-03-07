@@ -8,17 +8,21 @@ import java.sql.DriverManager;
  */
 public class DBCon {
 
-    Connection connection;
+    private static Connection connection;
 
-    public Connection CreateConnection(String host, String database, String dbuser, String dbpass) {
+    public static void CreateConnection(String host, String database, String dbuser, String dbpass) {
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             /**
              * Create and initialize the database connection.
              */
             connection = (Connection) DriverManager.getConnection(host + database, dbuser, dbpass);
-        } catch (Exception ex) {
+
+        } catch (Exception ex) {            
         }
+    }
+    
+    public static Connection getConnection(){
         return connection;
     }
 }

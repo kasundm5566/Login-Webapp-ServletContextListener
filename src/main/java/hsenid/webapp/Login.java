@@ -19,14 +19,14 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author hsenid
  */
-public class Login extends HttpServlet {
+public class Login extends HttpServlet{
 
     User user;
     DBCon dbc;
-    String host = "jdbc:mysql://localhost:3306/";
+    /*String host = "jdbc:mysql://localhost:3306/";
     String database = "userdata";
     String dbuser = "root";
-    String dbpass = "test123";
+    String dbpass = "test123";*/
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -45,9 +45,9 @@ public class Login extends HttpServlet {
         if (status) {
             resp.sendRedirect("success.jsp");
         } else {
-            req.setAttribute("error_msg", "User name and password does not match!");
+            req.setAttribute("error_msg", "User name or password error!");
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
-            rd.forward(req, resp);
+            rd.forward(req, resp);  
         }
 
     }
@@ -65,17 +65,16 @@ public class Login extends HttpServlet {
      * This method will initialize a database connection and then validate user name
      * and password using the database.
      */
-    public boolean ValidateByDB(User u) {
-        dbc = new DBCon();
+    public static boolean ValidateByDB(User u) {
+        //dbc = new DBCon();
         boolean status = false;
         try {
-            Connection connection = dbc.CreateConnection(host, database, dbuser, dbpass);
+            Connection connection=DBCon.getConnection();
             Statement statement = connection.createStatement();
             String query = "SELECT Name FROM user_cred WHERE Name=\"" + u.getUsername() + "\" && pass=md5(\"" + u.getPassword() + "\");";
             ResultSet result = statement.executeQuery(query);
             status = result.first();
         } catch (Exception e) {
-            //s=e.toString();
         }
         return status;
     }
