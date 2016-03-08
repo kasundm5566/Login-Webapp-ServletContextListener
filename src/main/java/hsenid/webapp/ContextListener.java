@@ -10,11 +10,10 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 /**
- *
+ * Created by hsenid.
  * @author hsenid
  */
 public class ContextListener implements ServletContextListener {
-
     public void contextInitialized(ServletContextEvent sce) {
         //Get parameters and create a connection using the DBCon class.
         ServletContext context = sce.getServletContext();
