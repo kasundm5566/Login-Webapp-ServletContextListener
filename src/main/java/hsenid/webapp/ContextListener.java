@@ -8,6 +8,7 @@ package hsenid.webapp;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.sql.SQLException;
 
 /**
  * Created by hsenid.
@@ -25,6 +26,9 @@ public class ContextListener implements ServletContextListener {
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
-
+        try {
+            DBCon.getConnection().close();
+        } catch (SQLException e) {
+        }
     }
 }
