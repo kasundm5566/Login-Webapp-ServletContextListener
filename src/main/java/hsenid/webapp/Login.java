@@ -23,10 +23,6 @@ public class Login extends HttpServlet{
 
     User user;
     static String error="Error in username or password!";
-    /*String host = "jdbc:mysql://localhost:3306/";
-    String database = "userdata";
-    String dbuser = "root";
-    String dbpass = "test123";*/
 
     @Override
     /**
