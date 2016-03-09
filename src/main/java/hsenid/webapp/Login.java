@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 public class Login extends HttpServlet{
 
     User user;
+    static String error="Error in username or password!";
     /*String host = "jdbc:mysql://localhost:3306/";
     String database = "userdata";
     String dbuser = "root";
@@ -47,7 +48,7 @@ public class Login extends HttpServlet{
         if (status) {
             resp.sendRedirect("success.jsp");
         } else {
-            req.setAttribute("error_msg", "User name or password error!");
+            req.setAttribute("error_msg", error);
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
             rd.forward(req, resp);  
         }
@@ -81,6 +82,7 @@ public class Login extends HttpServlet{
             ResultSet result = statement.executeQuery(query);
             status = result.first();
         } catch (Exception e) {
+            error="Something bad happened. Try again later.";
         }
         return status;
     }
