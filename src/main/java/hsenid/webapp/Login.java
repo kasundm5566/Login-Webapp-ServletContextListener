@@ -17,12 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by hsenid.
+ *
  * @author hsenid
  */
-public class Login extends HttpServlet{
+public class Login extends HttpServlet {
 
     User user;
-    static String error="Error in username or password!";
+    static String error = "Error in username or password!";
 
     @Override
     /**
@@ -35,25 +36,29 @@ public class Login extends HttpServlet{
         if(status){
             resp.sendRedirect("success.jsp");
         }else{
+            error = "User name and password does not match!";
             req.setAttribute("error_msg", "User name and password does not match!");
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
             rd.forward(req, resp);
         }*/
 
-        boolean status = ValidateByDB(user);
-        if (status) {
-            resp.sendRedirect("success.jsp");
-        } else {
-            req.setAttribute("error_msg", error);
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
-            rd.forward(req, resp);  
+        try {
+            boolean status = ValidateByDB(user);
+            if (status) {
+                resp.sendRedirect("success.jsp");
+            } else {
+                error = "User name and password does not match!";
+                req.setAttribute("error_msg", error);
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
+                rd.forward(req, resp);
+            }
+        } catch (Exception e) {
+            error = "Something bad happened. Try again later.";
         }
-
     }
-    
+
     /**
-     * @param user
-     * Passing a user to validate username and password
+     * @param user Passing a user to validate username and password
      * @return status
      * Returns whether user passed the validation or not
      */
@@ -62,23 +67,31 @@ public class Login extends HttpServlet{
         status = user.getUsername().equals("test") && user.getPassword().equals("123");
         return status;
     }
-    
+
     /**
-     * @param user
-     * Passing a user to validate username and password
+     * @param user Passing a user to validate username and password
      * @return status
      * Returns whether user passed the validation or not
      */
-    public static boolean ValidateByDB(User user) {
+    public static boolean ValidateByDB(User user) throws Exception {
         boolean status = false;
+        Statement statement = null;
+        ResultSet result = null;
         try {
-            Connection connection=DBCon.getConnection();
-            Statement statement = connection.createStatement();
+            Connection connection = DBCon.getConnection();
+            statement = connection.createStatement();
             String query = "SELECT Name FROM user_cred WHERE Name=\"" + user.getUsername() + "\" && pass=md5(\"" + user.getPassword() + "\");";
-            ResultSet result = statement.executeQuery(query);
+            result = statement.executeQuery(query);
             status = result.first();
         } catch (Exception e) {
-            error="Something bad happened. Try again later.";
+            error = "Something bad happened. Try again later.";
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+            if (result != null) {
+                result.close();
+            }
         }
         return status;
     }
